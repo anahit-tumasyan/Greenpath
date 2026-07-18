@@ -1,0 +1,44 @@
+:root {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --accent: #8b5cf6;
+  --accent2: #22c55e;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: var(--text);
+}
+
+/* center app */
+#root {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ✨ animated background */
+body::before {
+  content: "";
+  position: fixed;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(139,92,246,0.2), transparent 70%);
+  animation: moveBg 12s linear infinite;
+  z-index: -1;
+}
+
+@keyframes moveBg {
+  from { transform: translate(0,0); }
+  to { transform: translate(-300px, -300px); }
+}

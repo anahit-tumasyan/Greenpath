@@ -1,0 +1,127 @@
+.container {
+  background: var(--card);
+  padding: 30px;
+  border-radius: 20px;
+  width: 800px;
+  max-width: 95%;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  text-align: center;
+}
+
+/* title */
+.title {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+/* character grid */
+.characters {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+/* character cards */
+.character-card {
+  background: #334155;
+  padding: 15px;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.character-card:hover {
+  transform: scale(1.05);
+  background: var(--accent);
+}
+
+/* buttons */
+.button {
+  background: var(--accent);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: 0.3s;
+}
+
+.button:hover {
+  background: #7c3aed;
+}
+
+/* question */
+.question {
+  font-size: 22px;
+  margin: 20px 0;
+}
+
+/* answers */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option {
+  background: #334155;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.option:hover {
+  background: var(--accent2);
+}
+
+/* 💬 speech bubble */
+.bubble {
+  background: white;
+  color: black;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: inline-block;
+  font-weight: 500;
+}
+
+/* 🎉 HAPPY animation */
+.happy {
+  animation: jump 0.6s ease;
+}
+
+@keyframes jump {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-40px) scale(1.05); }
+  100% { transform: translateY(0); }
+}
+
+/* 😭 SAD animation */
+.sad {
+  animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  50% { transform: translateX(10px); }
+  75% { transform: translateX(-10px); }
+  100% { transform: translateX(0); }
+}
+
+/* progress bar glow */
+.progress-bar {
+  height: 16px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #334155;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #8b5cf6, #22c55e);
+  transition: 0.3s;
+}
