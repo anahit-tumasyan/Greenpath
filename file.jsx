@@ -683,7 +683,7 @@ function AristotleIntro({ module, onStart }) {
             </div>
           )}
 
-          <img src="/Aristotle.png" alt="Aristotle" style={{
+          <img src="Aristotle.png" alt="Aristotle" style={{
             width:100, height:133, objectFit:"contain",
             opacity: AristotleIn ? 1 : 0,
             transform: AristotleIn ? "translateY(0)" : "translateY(20px)",
@@ -1030,7 +1030,7 @@ function MapSVG({ completedModules }) {
       {completedModules>=5&&<path d="M68 28 Q54 18 44 13" stroke="#4ade80" strokeWidth="3.8" fill="none" strokeLinecap="round" opacity="0.9"/>}
 
       {/* Aristotle person near start */}
-      <image href="/Aristotle.png" x="55" y="81" width="11" height="15"
+      <image href="Aristotle.png" x="55" y="81" width="11" height="15"
         style={{ imageRendering:"pixelated" }} opacity="0.9"/>
     </svg>
   );
@@ -1390,8 +1390,8 @@ function handleNext() {
 }
 
   const AristotleImg = phase==="feedback"
-    ?(correct?"/happy_Aristotle.png":"/angry_Aristotle.png")
-    :"/Aristotle.png";
+    ?(correct?"happy_Aristotle.png":"angry_Aristotle.png")
+    :"Aristotle.png";
   const charImg = phase==="feedback"
     ?(correct?character.happy:character.sad)
     :character.idle;
@@ -1768,7 +1768,7 @@ function handleNext() {
       transition:AristotleIn?"none":"right 0s",
       textAlign:"center",
     }}>
-      <img src="/Aristotle.png" alt="Aristotle" style={{
+      <img src="Aristotle.png" alt="Aristotle" style={{
         width:88,height:117,objectFit:"contain",
         filter:"drop-shadow(0 8px 28px rgba(139,92,246,0.65))",
         animation:AristotleIn?"walkBob 0.55s ease-in-out infinite":"none",
@@ -1821,7 +1821,7 @@ function handleNext() {
             <div style={{ background:"rgba(10,20,10,0.82)",backdropFilter:"blur(16px)",
               border:"1px solid rgba(74,222,128,0.22)",borderRadius:18,padding:"12px 14px" }}>
               <div style={{ display:"flex",gap:10,alignItems:"flex-start" }}>
-                <img src="/Aristotle.png" alt="Aristotle" style={{
+                <img src="Aristotle.png" alt="Aristotle" style={{
                   width:44,height:59,objectFit:"contain",flexShrink:0,
                   animation:"idleFloat 3s ease-in-out infinite",
                   filter:"drop-shadow(0 4px 12px rgba(139,92,246,0.5))",
@@ -2043,7 +2043,7 @@ function ResultsScreen({ mod, character, score, total, onContinue }) {
         <div style={{ display:"flex", gap:12, alignItems:"center",
           background:"rgba(255,255,255,0.04)", borderRadius:16,
           padding:14, marginBottom:20, textAlign:"left" }}>
-          <img src={pass?"/happy_Aristotle.png":"/Aristotle.png"} alt="Aristotle"
+          <img src={pass?"happy_Aristotle.png":"Aristotle.png"} alt="Aristotle"
             style={{ width:52, height:69, objectFit:"contain", flexShrink:0,
               animation:pass?"AristotleBounce 0.7s ease":"none" }}/>
           <div>
