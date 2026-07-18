@@ -13,16 +13,16 @@ const LANGUAGES = [
 
 const CHARACTERS = [
   { id:"Manos", name:"Manos", culture:"Greek",    color:"#3b82f6",
-    idle:"/Manos.png", happy:"/happy_Manos.png", sad:"/sad_Manos.png",
+    idle:"Manos.png", happy:"happy_Manos.png", sad:"sad_Manos.png",
     bubble:{ idle:"Let's learn together!", happy:"Yay! Correct!", sad:"Try again!" } },
   { id:"Roxana",  name:"Roxana",  culture:"Romanian", color:"#f59e0b",
-    idle:"/Roxana.png",  happy:"/happy_Roxana.png",  sad:"/sad_Roxana.png",
+    idle:"Roxana.png",  happy:"happy_Roxana.png",  sad:"sad_Roxana.png",
     bubble:{ idle:"Ready to learn?", happy:"Amazing!", sad:"Next one!" } },
   { id:"Rino", name:"Rino", culture:"Italian",  color:"#22c55e",
-    idle:"/Rino.png", happy:"/happy_Rino.png", sad:"/sad_Rino.png",
+    idle:"Rino.png", happy:"happy_Rino.png", sad:"sad_Rino.png",
     bubble:{ idle:"Let's make it fun!", happy:"Bravooo!", sad:"Keep going!" } },
   { id:"Jana",  name:"Jana",  culture:"Czech",    color:"#ef4444",
-    idle:"/Jana.png",  happy:"/happy_Jana.png",  sad:"/sad_Jana.png",
+    idle:"Jana.png",  happy:"happy_Jana.png",  sad:"sad_Jana.png",
     bubble:{ idle:"Let's study together!", happy:"Great job!", sad:"Continue!" } },
 ];
 
@@ -107,7 +107,7 @@ const QUESTIONS = [
     module: 2,
     text: "Which choice helps reduce food transport emissions?",
     options: ["Imported packaged food", "Food grown in a local edible whildlife garden"],
-    images: ["/Garden1.png", "/Garden2.png"],
+    images: ["Garden1.png", "Garden2.png"],
     answer: 0,
     explanation: "A diverse garden provides a wide variety of food and seeds while preserving biodiversity, supporting pollinators and wildlife, and helping gardens better adapt to drought, pests, and climate change."
   },
@@ -124,7 +124,7 @@ const QUESTIONS = [
     module: 2,
     text: "Which garden has the greatest seed diversity?",
     options: ["A colourful garden with many different plants", "A large field growing only one crop", "A decorative lawn with no edible plants."],
-    images: ["/SeedDiversity1.png", "/SeedDiversity2.png", "/SeedDiversity3.png"],
+    images: ["SeedDiversity1.png", "SeedDiversity2.png", "SeedDiversity3.png"],
     answer: 0,
     explanation: "Traditional seeds preserve local plant varieties, protect cultural heritage, and strengthen climate resilience by conserving varieties naturally adapted to local climates and changing environmental conditions."
   },
