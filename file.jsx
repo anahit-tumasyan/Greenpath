@@ -1,6 +1,20 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
 
 /* ═══════════════════════════════════════════════════
+   ASSET PATH HELPER
+   Computes the correct base folder from the page's own
+   current URL at runtime, so images resolve correctly
+   no matter what subpath the app is served from (and
+   regardless of trailing-slash quirks / redirects).
+═══════════════════════════════════════════════════ */
+const ASSET_BASE = (() => {
+  if (typeof window === "undefined") return "";
+  const p = window.location.pathname;
+  return p.endsWith("/") ? p : p.slice(0, p.lastIndexOf("/") + 1);
+})();
+function asset(name) { return ASSET_BASE + name; }
+
+/* ═══════════════════════════════════════════════════
    DATA
 ═══════════════════════════════════════════════════ */
 const LANGUAGES = [
@@ -13,16 +27,16 @@ const LANGUAGES = [
 
 const CHARACTERS = [
   { id:"Manos", name:"Manos", culture:"Greek",    color:"#3b82f6",
-    idle:"Manos.png", happy:"happy_Manos.png", sad:"sad_Manos.png",
+    idle:asset("Manos.png"), happy:asset("happy_Manos.png"), sad:asset("sad_Manos.png"),
     bubble:{ idle:"Let's learn together!", happy:"Yay! Correct!", sad:"Try again!" } },
   { id:"Roxana",  name:"Roxana",  culture:"Romanian", color:"#f59e0b",
-    idle:"Roxana.png",  happy:"happy_Roxana.png",  sad:"sad_Roxana.png",
+    idle:asset("Roxana.png"),  happy:asset("happy_Roxana.png"),  sad:asset("sad_Roxana.png"),
     bubble:{ idle:"Ready to learn?", happy:"Amazing!", sad:"Next one!" } },
   { id:"Rino", name:"Rino", culture:"Italian",  color:"#22c55e",
-    idle:"Rino.png", happy:"happy_Rino.png", sad:"sad_Rino.png",
+    idle:asset("Rino.png"), happy:asset("happy_Rino.png"), sad:asset("sad_Rino.png"),
     bubble:{ idle:"Let's make it fun!", happy:"Bravooo!", sad:"Keep going!" } },
   { id:"Jana",  name:"Jana",  culture:"Czech",    color:"#ef4444",
-    idle:"Jana.png",  happy:"happy_Jana.png",  sad:"sad_Jana.png",
+    idle:asset("Jana.png"),  happy:asset("happy_Jana.png"),  sad:asset("sad_Jana.png"),
     bubble:{ idle:"Let's study together!", happy:"Great job!", sad:"Continue!" } },
 ];
 
@@ -107,7 +121,7 @@ const QUESTIONS = [
     module: 2,
     text: "Which choice helps reduce food transport emissions?",
     options: ["Imported packaged food", "Food grown in a local edible whildlife garden"],
-    images: ["Garden1.png", "Garden2.png"],
+    images: [asset("Garden1.png"), asset("Garden2.png")],
     answer: 0,
     explanation: "A diverse garden provides a wide variety of food and seeds while preserving biodiversity, supporting pollinators and wildlife, and helping gardens better adapt to drought, pests, and climate change."
   },
@@ -124,7 +138,7 @@ const QUESTIONS = [
     module: 2,
     text: "Which garden has the greatest seed diversity?",
     options: ["A colourful garden with many different plants", "A large field growing only one crop", "A decorative lawn with no edible plants."],
-    images: ["SeedDiversity1.png", "SeedDiversity2.png", "SeedDiversity3.png"],
+    images: [asset("SeedDiversity1.png"), asset("SeedDiversity2.png"), asset("SeedDiversity3.png")],
     answer: 0,
     explanation: "Traditional seeds preserve local plant varieties, protect cultural heritage, and strengthen climate resilience by conserving varieties naturally adapted to local climates and changing environmental conditions."
   },
@@ -683,7 +697,7 @@ function AristotleIntro({ module, onStart }) {
             </div>
           )}
 
-          <img src="Aristotle.png" alt="Aristotle" style={{
+          <img src={asset("Aristotle.png")} alt="Aristotle" style={{
             width:100, height:133, objectFit:"contain",
             opacity: AristotleIn ? 1 : 0,
             transform: AristotleIn ? "translateY(0)" : "translateY(20px)",
@@ -1030,7 +1044,7 @@ function MapSVG({ completedModules }) {
       {completedModules>=5&&<path d="M68 28 Q54 18 44 13" stroke="#4ade80" strokeWidth="3.8" fill="none" strokeLinecap="round" opacity="0.9"/>}
 
       {/* Aristotle person near start */}
-      <image href="Aristotle.png" x="55" y="81" width="11" height="15"
+      <image href={asset("Aristotle.png")} x="55" y="81" width="11" height="15"
         style={{ imageRendering:"pixelated" }} opacity="0.9"/>
     </svg>
   );
@@ -1390,8 +1404,8 @@ function handleNext() {
 }
 
   const AristotleImg = phase==="feedback"
-    ?(correct?"happy_Aristotle.png":"angry_Aristotle.png")
-    :"Aristotle.png";
+    ?(correct?asset("happy_Aristotle.png"):asset("angry_Aristotle.png"))
+    :asset("Aristotle.png");
   const charImg = phase==="feedback"
     ?(correct?character.happy:character.sad)
     :character.idle;
@@ -1768,7 +1782,7 @@ function handleNext() {
       transition:AristotleIn?"none":"right 0s",
       textAlign:"center",
     }}>
-      <img src="Aristotle.png" alt="Aristotle" style={{
+      <img src={asset("Aristotle.png")} alt="Aristotle" style={{
         width:88,height:117,objectFit:"contain",
         filter:"drop-shadow(0 8px 28px rgba(139,92,246,0.65))",
         animation:AristotleIn?"walkBob 0.55s ease-in-out infinite":"none",
@@ -1821,7 +1835,7 @@ function handleNext() {
             <div style={{ background:"rgba(10,20,10,0.82)",backdropFilter:"blur(16px)",
               border:"1px solid rgba(74,222,128,0.22)",borderRadius:18,padding:"12px 14px" }}>
               <div style={{ display:"flex",gap:10,alignItems:"flex-start" }}>
-                <img src="Aristotle.png" alt="Aristotle" style={{
+                <img src={asset("Aristotle.png")} alt="Aristotle" style={{
                   width:44,height:59,objectFit:"contain",flexShrink:0,
                   animation:"idleFloat 3s ease-in-out infinite",
                   filter:"drop-shadow(0 4px 12px rgba(139,92,246,0.5))",
@@ -2043,7 +2057,7 @@ function ResultsScreen({ mod, character, score, total, onContinue }) {
         <div style={{ display:"flex", gap:12, alignItems:"center",
           background:"rgba(255,255,255,0.04)", borderRadius:16,
           padding:14, marginBottom:20, textAlign:"left" }}>
-          <img src={pass?"happy_Aristotle.png":"Aristotle.png"} alt="Aristotle"
+          <img src={pass?asset("happy_Aristotle.png"):asset("Aristotle.png")} alt="Aristotle"
             style={{ width:52, height:69, objectFit:"contain", flexShrink:0,
               animation:pass?"AristotleBounce 0.7s ease":"none" }}/>
           <div>
