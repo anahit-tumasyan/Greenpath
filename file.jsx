@@ -15,6 +15,40 @@ const ASSET_BASE = (() => {
 function asset(name) { return ASSET_BASE + name; }
 
 /* ═══════════════════════════════════════════════════
+   LOCAL "ACCOUNTS" (browser-only, not a real backend)
+═══════════════════════════════════════════════════ */
+const USERS_KEY = "gq_users";
+const CURRENT_USER_KEY = "gq_current_user";
+
+function loadUsers() {
+  try { return JSON.parse(localStorage.getItem(USERS_KEY)) || {}; }
+  catch { return {}; }
+}
+function saveUsers(users) {
+  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+}
+function setStoredCurrentUser(username) {
+  localStorage.setItem(CURRENT_USER_KEY, username);
+}
+function getStoredCurrentUser() {
+  const username = localStorage.getItem(CURRENT_USER_KEY);
+  if (!username) return null;
+  const users = loadUsers();
+  const u = users[username];
+  return u ? { username, fullName: u.fullName } : null;
+}
+function loadProgress(username) {
+  const users = loadUsers();
+  return users[username]?.progress || null;
+}
+function saveProgress(username, progress) {
+  const users = loadUsers();
+  if (!users[username]) return;
+  users[username].progress = progress;
+  saveUsers(users);
+}
+
+/* ═══════════════════════════════════════════════════
    DATA
 ═══════════════════════════════════════════════════ */
 const LANGUAGES = [
@@ -47,28 +81,28 @@ const MODULES = [
     title: "ORGANIC PEST CONTROL AND COMPANION PLANTING",
     icon: "🌿",
     color: "#22c55e",
-    info: "Homemade natural pest control uses plant-based preparations — garlic, nettles, chili peppers, or soap solutions — to manage garden pests without synthetic chemicals. Companion planting takes this further by pairing crops that protect each other: marigolds, basil, lavender, chives, garlic and nasturtiums repel unwanted insects, while classic pairings like tomatoes with basil, carrots with onions, and corn with beans boost resilience and flavour."
+    info: "Homemade natural pest control uses plant-based preparations and natural ingredients such as garlic, nettles, chili peppers, or soap solutions to manage garden pests without synthetic chemicals. These methods are enviromentally friendly, affordable, biodegradable, and. help protect beneficial insects while supporting sustainable and organic gardening practices."
   },
-  {
+    {
     id: 2,
     title: "Forest-Inspired Edible Wildlife Gardens",
     icon: "🌍",
     color: "#f59e0b",
-    info: "Forest-inspired edible wildlife gardens are natural or semi-natural spaces where edible plants grow in harmony with local ecosystems, mimicking the layers and biodiversity of a forest with minimal human intervention. Traditional seeds are the hidden power behind these gardens — saving, exchanging, and growing diverse local varieties preserves cultural heritage and strengthens climate resilience for generations to come."
+    info: "Forest-inspired edible wildlife gardens are natural or semi-natural spaces where edible plants grow in harmony with local ecosystems, mimicking the layers and biodiversity of a forest with minimal human intervention. Traditional seeds are the hidden power behind these gardens saving, exchanging, and growing diverse local varieties preserves cultural heritage and strengthens climate resilience for generations to come."
   },
   {
     id: 3,
     title: "Reducing Food Waste",
     icon: "🦋",
     color: "#3b82f6",
-    info: "Traditional pickling, sun-drying and oil-based methods preserve seasonal produce without refrigeration — vegetables are brined or soaked in vinegar, fruit and herbs are dried in the sun, and olives are stored in oil, saving surplus harvests from waste. Leftover citrus peels get a second life too: steeped in vinegar for about two weeks, they become a fragrant, all-purpose cleaner that replaces synthetic chemical products."
+    info: "Traditional pickling, sun-drying and oil-based methods preserve seasonal produce without refrigeration vegetables are brined or soaked in vinegar, fruit and herbs are dried in the sun, and olives are stored in oil, saving surplus harvests from waste. Leftover citrus peels get a second life too: steeped in vinegar for about two weeks, they become a fragrant, all-purpose cleaner that replaces synthetic chemical products."
   },
   {
     id: 4,
     title: "Reusable Alternatives for a Plastic-Free Kitchen",
     icon: "🌱",
     color: "#10b981",
-    info: "Clay pot crafting revives the ancient art of shaping terracotta vessels for food storage — durable, breathable containers for grains, legumes and pickles that keep food fresh for longer without a single scrap of plastic. Old clothes and linen scraps get a second life too, stitched into sturdy reusable bags for shopping, produce and bread — reviving traditional sewing skills while replacing single-use plastic."
+    info: "Clay pot crafting revives the ancient art of shaping terracotta vessels for food storage durable, breathable containers for grains, legumes and pickles that keep food fresh for longer without a single scrap of plastic. Old clothes and linen scraps get a second life too, stitched into sturdy reusable bags for shopping, produce and bread reviving traditional sewing skills while replacing single-use plastic."
   }
 ];
 
@@ -88,7 +122,7 @@ const QUESTIONS = [
     text: "Is it TRUE OR FALSE that homemade natural pest-control methods completely replace chemical pesticides?",
     options: ["True", "False"],
     answer: 1,
-    explanation: "Homemade natural pest control uses plant-based preparations and natural ingredients — like garlic, nettles, and soap solutions — instead of synthetic chemicals. It's affordable and biodegradable, but it supports sustainable gardening alongside other practices rather than replacing every chemical intervention outright."
+    explanation: "Homemade natural pest control uses plant-based preparations and natural ingredients like garlic, nettles, and soap solutions instead of synthetic chemicals. It's affordable and biodegradable, but it supports sustainable gardening alongside other practices rather than replacing every chemical intervention outright."
   },
   {
     id: 3,
@@ -444,6 +478,115 @@ function Panel({ children, style={} }) {
       animation:"panelSlideUp 0.4s ease",
       ...style,
     }}>{children}</div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════
+   AUTH SCREEN (register / login)
+═══════════════════════════════════════════════════ */
+const inputStyle = {
+  background:"rgba(255,255,255,0.06)",
+  border:"1px solid rgba(74,222,128,0.25)",
+  borderRadius:12, padding:"12px 14px",
+  color:"#f0fdf4", fontSize:14, fontFamily:"inherit", outline:"none",
+};
+
+function AuthScreen({ onAuth }) {
+  const [mode, setMode] = useState("register"); // "register" | "login"
+  const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    setError("");
+    const users = loadUsers();
+    const uname = username.trim().toLowerCase();
+
+    if (mode === "register") {
+      if (!fullName.trim() || !uname || !password) {
+        setError("Please fill in all fields.");
+        return;
+      }
+      if (users[uname]) {
+        setError("That username is already taken.");
+        return;
+      }
+      users[uname] = { fullName: fullName.trim(), password, progress: null };
+      saveUsers(users);
+      setStoredCurrentUser(uname);
+      onAuth({ username: uname, fullName: fullName.trim(), progress: null });
+    } else {
+      const u = users[uname];
+      if (!u || u.password !== password) {
+        setError("Incorrect username or password.");
+        return;
+      }
+      setStoredCurrentUser(uname);
+      onAuth({ username: uname, fullName: u.fullName, progress: u.progress || null });
+    }
+  }
+
+  return (
+    <GardenWrap>
+      <Panel>
+        <div style={{ textAlign:"center", marginBottom:22 }}>
+          <div style={{ fontSize:44, marginBottom:8 }}>🔐</div>
+          <h1 style={{ fontSize:22, fontWeight:900, color:"#f0fdf4" }}>
+            {mode==="register" ? "Create Your Account" : "Welcome Back"}
+          </h1>
+          <p style={{ color:"#86efac", fontSize:13, marginTop:4 }}>
+            {mode==="register"
+              ? "We'll use your name on your completion certificate"
+              : "Log in to continue your garden journey"}
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} style={{ display:"flex", flexDirection:"column", gap:12 }}>
+          {mode==="register" && (
+            <input
+              type="text" placeholder="Full name (for your certificate)"
+              value={fullName} onChange={e=>setFullName(e.target.value)}
+              style={inputStyle}
+            />
+          )}
+          <input
+            type="text" placeholder="Username"
+            value={username} onChange={e=>setUsername(e.target.value)}
+            style={inputStyle} autoCapitalize="none"
+          />
+          <input
+            type="password" placeholder="Password"
+            value={password} onChange={e=>setPassword(e.target.value)}
+            style={inputStyle}
+          />
+
+          {error && (
+            <div style={{ color:"#fca5a5", fontSize:13, textAlign:"center" }}>{error}</div>
+          )}
+
+          <Btn onClick={()=>{}} style={{ width:"100%", marginTop:6 }} color="#22c55e">
+            {mode==="register" ? "Create Account 🌱" : "Log In 🌿"}
+          </Btn>
+        </form>
+
+        <div style={{ textAlign:"center", marginTop:16 }}>
+          <button
+            onClick={()=>{ setMode(m=>m==="register"?"login":"register"); setError(""); }}
+            style={{ background:"none", border:"none", color:"#86efac",
+              fontSize:13, cursor:"pointer", textDecoration:"underline", fontFamily:"inherit" }}
+          >
+            {mode==="register" ? "Already have an account? Log in" : "New here? Create an account"}
+          </button>
+        </div>
+
+        <p style={{ marginTop:18, color:"#475569", fontSize:11, textAlign:"center", lineHeight:1.5 }}>
+          Your account is stored only on this device/browser. It's used to personalize your
+          completion certificate — it isn't a secure login system.
+        </p>
+      </Panel>
+    </GardenWrap>
   );
 }
 
@@ -1053,7 +1196,7 @@ function MapSVG({ completedModules }) {
 /* ═══════════════════════════════════════════════════
    MAP SCREEN
 ═══════════════════════════════════════════════════ */
-function MapScreen({ language, character, completedModules, prevCompleted, onStartModule, onBack }) {
+function MapScreen({ language, character, completedModules, prevCompleted, onStartModule, onBack, onViewCertificate, onPlayAgain }) {
   const [charNode,        setCharNode]        = useState(prevCompleted);
   const [charPos,         setCharPos]         = useState(PATH_NODES[prevCompleted]);
   const [isWalking,       setIsWalking]       = useState(false);
@@ -1291,6 +1434,12 @@ function MapScreen({ language, character, completedModules, prevCompleted, onSta
             {!isWalking&&completedModules>0&&completedModules<MODULES.length&&"The Aristotle awaits your next lesson! 👆"}
             {!isWalking&&completedModules===MODULES.length&&"🏆 You've mastered the entire garden journey!"}
           </p>
+          {completedModules===MODULES.length && (
+            <div style={{ marginTop:10, display:"flex", gap:8, justifyContent:"center" }}>
+              <Btn onClick={onViewCertificate} color="#fbbf24">🏆 View Certificate</Btn>
+              <Btn onClick={onPlayAgain} color="#3b82f6">🔄 Play Again</Btn>
+            </div>
+          )}
         </div>
       </Panel>
     </GardenWrap>
@@ -1851,7 +2000,7 @@ function handleNext() {
             </div>
 
             {q.images ? (
-              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,
+              <div style={{ display:"grid",gridTemplateColumns:`repeat(${q.images.length}, 1fr)`,gap:8,
                 flex:1,alignContent:"center",maxHeight:"100%",overflow:"hidden" }}>
                 {q.images.map((img,i)=>(
                   <div key={i} onClick={()=>handleAnswer(i)}
@@ -1964,7 +2113,7 @@ function handleNext() {
             </div>
 
             {q.images ? (
-              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:8 }}>
+              <div style={{ display:"grid",gridTemplateColumns:`repeat(${q.images.length}, 1fr)`,gap:8 }}>
                 {q.images.map((img,i)=>{
                   let border="2px solid transparent";
                   if (i===q.answer)      border="2px solid #22c55e";
@@ -2007,8 +2156,8 @@ function handleNext() {
               </div>
             )}
 
-            <div style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",
-              borderRadius:12,padding:"9px 12px",fontSize:11.5,color:"#94a3b8",lineHeight:1.5 }}>
+            <div style={{ background:"rgba(251,191,36,0.14)",border:"1.5px solid rgba(251,191,36,0.45)",
+              borderRadius:12,padding:"10px 13px",fontSize:12.5,fontWeight:600,color:"#2c32efff",lineHeight:1.55 }}>
               💡 {q.explanation}
             </div>
 
@@ -2096,10 +2245,116 @@ function ResultsScreen({ mod, character, score, total, onContinue }) {
 }
 
 /* ═══════════════════════════════════════════════════
+   CERTIFICATE SCREEN
+═══════════════════════════════════════════════════ */
+function CertificateScreen({ user, language, onBack }) {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    const W = 1200, H = 850;
+    canvas.width = W; canvas.height = H;
+
+    const grad = ctx.createLinearGradient(0,0,W,H);
+    grad.addColorStop(0, "#fdfaf0");
+    grad.addColorStop(1, "#f3ecd8");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,W,H);
+
+    ctx.strokeStyle = "#166534";
+    ctx.lineWidth = 10;
+    ctx.strokeRect(30,30,W-60,H-60);
+    ctx.strokeStyle = "#4ade80";
+    ctx.lineWidth = 3;
+    ctx.strokeRect(48,48,W-96,H-96);
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#166534";
+    ctx.font = "bold 26px Georgia";
+    ctx.fillText("🌿 GARDEN QUEST 🌿", W/2, 130);
+
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "bold 48px Georgia";
+    ctx.fillText("Certificate of Completion", W/2, 200);
+
+    ctx.font = "20px Georgia";
+    ctx.fillStyle = "#475569";
+    ctx.fillText("This certifies that", W/2, 270);
+
+    ctx.font = "italic bold 44px Georgia";
+    ctx.fillStyle = "#166534";
+    ctx.fillText(user.fullName, W/2, 340);
+
+    ctx.font = "20px Georgia";
+    ctx.fillStyle = "#475569";
+    ctx.fillText("has successfully completed all four modules of Garden Quest", W/2, 400);
+    ctx.fillText(`in ${language.label}`, W/2, 430);
+
+    const dateStr = new Date().toLocaleDateString(undefined, {
+      year: "numeric", month: "long", day: "numeric"
+    });
+    ctx.font = "16px Georgia";
+    ctx.fillText(`Awarded on ${dateStr}`, W/2, 500);
+
+    ctx.beginPath();
+    ctx.arc(W/2, 600, 55, 0, Math.PI*2);
+    ctx.fillStyle = "#fbbf24";
+    ctx.fill();
+    ctx.strokeStyle = "#b8720a";
+    ctx.lineWidth = 4;
+    ctx.stroke();
+    ctx.fillStyle = "#78350f";
+    ctx.font = "bold 14px Georgia";
+    ctx.fillText("GARDEN", W/2, 595);
+    ctx.fillText("QUEST", W/2, 615);
+  }, [user, language]);
+
+  function download() {
+    const canvas = canvasRef.current;
+    const link = document.createElement("a");
+    link.download = `${user.fullName.replace(/\s+/g,"_")}_GardenQuest_Certificate.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  }
+
+  return (
+    <GardenWrap>
+      <Panel style={{ maxWidth: 620 }}>
+        <div style={{ textAlign:"center", marginBottom:16 }}>
+          <div style={{ fontSize:50 }}>🏆</div>
+          <h1 style={{ fontSize:22, fontWeight:900, color:"#f0fdf4" }}>
+            Congratulations, {user.fullName}!
+          </h1>
+          <p style={{ color:"#86efac", fontSize:13 }}>
+            You've completed the entire Garden Quest journey.
+          </p>
+        </div>
+
+        <div style={{ borderRadius:14, overflow:"hidden", border:"1px solid rgba(74,222,128,0.25)", marginBottom:18 }}>
+          <canvas ref={canvasRef} style={{ width:"100%", display:"block" }} />
+        </div>
+
+        <div style={{ display:"flex", gap:10 }}>
+          <Btn onClick={download} style={{ flex:1 }} color="#fbbf24">
+            ⬇️ Download Certificate
+          </Btn>
+          <Btn onClick={onBack} style={{ flex:1 }} color="#22c55e">
+            🗺️ Back to Map
+          </Btn>
+        </div>
+      </Panel>
+    </GardenWrap>
+  );
+}
+
+/* ═══════════════════════════════════════════════════
    ROOT APP
 ═══════════════════════════════════════════════════ */
+
 export default function App() {
   const [screen,           setScreen]           = useState("loading");
+  const [user,             setUser]             = useState(null);
   const [language,         setLanguage]         = useState(null);
   const [character,        setCharacter]        = useState(null);
   const [completedModules, setCompletedModules] = useState(0);
@@ -2111,16 +2366,54 @@ export default function App() {
     activeModule ? QUESTIONS.filter(q=>q.module===activeModule.id) : [],
   [activeModule]);
 
+  function handleAuth(u) {
+    setUser(u);
+    if (u.progress && u.progress.completedModules != null) {
+      const lang = LANGUAGES.find(l=>l.id===u.progress.languageId);
+      const char = CHARACTERS.find(c=>c.id===u.progress.characterId);
+      if (lang && char) {
+        setLanguage(lang);
+        setCharacter(char);
+        setCompletedModules(u.progress.completedModules);
+        setPrevCompleted(u.progress.completedModules);
+        setScreen("map");
+        return;
+      }
+    }
+    setScreen("language");
+  }
+
   function handleFinish(score) { setLastScore(score); setScreen("results"); }
 
   function handleContinue() {
     const isNextModule = activeModule.id === completedModules+1;
     const pass = lastScore >= moduleQuestions.length-1;
-    if (isNextModule && pass) {
-      setPrevCompleted(completedModules);
-      setCompletedModules(c=>Math.min(c+1,MODULES.length));
-    } else {
-      setPrevCompleted(completedModules);
+    const newCompleted = (isNextModule && pass)
+      ? Math.min(completedModules+1, MODULES.length)
+      : completedModules;
+
+    setPrevCompleted(completedModules);
+    setCompletedModules(newCompleted);
+
+    if (user) {
+      saveProgress(user.username, {
+        languageId: language.id,
+        characterId: character.id,
+        completedModules: newCompleted,
+      });
+    }
+    setScreen("map");
+  }
+
+  function handlePlayAgain() {
+    setPrevCompleted(0);
+    setCompletedModules(0);
+    if (user) {
+      saveProgress(user.username, {
+        languageId: language.id,
+        characterId: character.id,
+        completedModules: 0,
+      });
     }
     setScreen("map");
   }
@@ -2129,7 +2422,10 @@ export default function App() {
     <>
       <GlobalStyles/>
       {screen==="loading"&&(
-        <LoadingScreen onDone={()=>setScreen("language")}/>
+        <LoadingScreen onDone={()=>setScreen("auth")}/>
+      )}
+      {screen==="auth"&&(
+        <AuthScreen onAuth={handleAuth}/>
       )}
       {screen==="language"&&(
         <LanguageScreen onSelect={l=>{ setLanguage(l); setScreen("character"); }}/>
@@ -2143,7 +2439,9 @@ export default function App() {
         <MapScreen language={language} character={character}
           completedModules={completedModules} prevCompleted={prevCompleted}
           onStartModule={mod=>{ setActiveModule(mod); setScreen("intro"); }}
-          onBack={()=>setScreen("character")}/>
+          onBack={()=>setScreen("character")}
+          onViewCertificate={()=>setScreen("certificate")}
+          onPlayAgain={handlePlayAgain}/>
       )}
       {screen==="intro"&&activeModule&&(
         <AristotleIntro module={activeModule}
@@ -2157,6 +2455,10 @@ export default function App() {
         <ResultsScreen mod={activeModule} character={character}
           score={lastScore} total={moduleQuestions.length}
           onContinue={handleContinue}/>
+      )}
+      {screen==="certificate"&&user&&(
+        <CertificateScreen user={user} language={language}
+          onBack={()=>setScreen("map")}/>
       )}
     </>
   );
