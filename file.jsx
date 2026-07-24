@@ -78,17 +78,17 @@ const CHARACTERS = [
 const MODULES = [
   {
     id: 1,
-    title: "ORGANIC PEST CONTROL AND COMPANION PLANTING",
-    icon: "🌿",
-    color: "#22c55e",
-    info: "Homemade natural pest control uses plant-based preparations and natural ingredients such as garlic, nettles, chili peppers, or soap solutions to manage garden pests without synthetic chemicals. These methods are enviromentally friendly, affordable, biodegradable, and help protect beneficial insects while supporting sustainable and organic gardening practices."
-  },
-    {
-    id: 2,
     title: "Forest-Inspired Edible Wildlife Gardens",
     icon: "🌍",
     color: "#f59e0b",
     info: "Forest-inspired edible wildlife gardens are natural or semi-natural spaces where edible plants grow in harmony with local ecosystems, mimicking the layers and biodiversity of a forest with minimal human intervention. Traditional seeds are the hidden power behind these gardens saving, exchanging, and growing diverse local varieties preserves cultural heritage and strengthens climate resilience for generations to come."
+  },
+  {
+    id: 2,
+    title: "ORGANIC PEST CONTROL AND COMPANION PLANTING",
+    icon: "🌿",
+    color: "#22c55e",
+    info: "Homemade natural pest control uses plant-based preparations and natural ingredients such as garlic, nettles, chili peppers, or soap solutions to manage garden pests without synthetic chemicals. These methods are enviromentally friendly, affordable, biodegradable, and. help protect beneficial insects while supporting sustainable and organic gardening practices."
   },
   {
     id: 3,
@@ -107,10 +107,10 @@ const MODULES = [
 ];
 
 const QUESTIONS = [
-  // MODULE 1: ORGANIC PEST CONTROL AND COMPANION PLANTING
+  // MODULE 2: ORGANIC PEST CONTROL AND COMPANION PLANTING
   {
     id: 1,
-    module: 1,
+    module: 2,
     text: "Which of the following substances in our kitchen can help us eliminate pests in the garden?",
     options: ["Soap", "Sugar", "Flour", "Pepper"],
     answer: 0,
@@ -118,7 +118,7 @@ const QUESTIONS = [
   },
   {
     id: 2,
-    module: 1,
+    module: 2,
     text: "Is it TRUE OR FALSE that homemade natural pest-control methods completely replace chemical pesticides?",
     options: ["True", "False"],
     answer: 1,
@@ -126,25 +126,25 @@ const QUESTIONS = [
   },
   {
     id: 3,
-    module: 1,
-    text: "Which companion plants also contribute to improving the taste of the plants they accompany? (Select one answer.)",
+    module: 2,
+    text: "Which companion plants also contribute to improving the taste of the plants they accompany?",
     options: ["BASIL", "MARIGOLD", "GARLIC", "NASTURTIUM"],
     answer: 0,
     explanation: "Companion planting pairs crops that protect and enhance one another. The classic combination of tomatoes with basil improves both resilience and flavour."
   },
   {
     id: 4,
-    module: 1,
+    module: 2,
     text: "Is it TRUE OR FALSE that carrots make a good pair with onions?",
     options: ["True", "False"],
     answer: 0,
     explanation: "Garlic or onions planted near carrots and cabbage have a strong scent that deters carrot flies, cabbage pests, and aphids, reducing pest damage naturally."
   },
 
-  // MODULE 2: FOREST-INSPIRED EDIBLE WILDLIFE GARDENS
+  // MODULE 1: FOREST-INSPIRED EDIBLE WILDLIFE GARDENS
   {
     id: 5,
-    module: 2,
+    module: 1,
     text: "What makes a garden more resilient to climate change?",
     options: ["One type of plant grown in rows.", "A biodiverse garden with trees, shrubs, flowers, herbs, and ground-cover plants.", "A concrete yard with decorative plants in pots."],
     answer: 1,
@@ -152,7 +152,7 @@ const QUESTIONS = [
   },
   {
     id: 6,
-    module: 2,
+    module: 1,
     text: "Which choice helps reduce food transport emissions?",
     options: ["Imported packaged food", "Food grown in a local edible whildlife garden"],
     images: [asset("Garden1.png"), asset("Garden2.png")],
@@ -161,7 +161,7 @@ const QUESTIONS = [
   },
   {
     id: 7,
-    module: 2,
+    module: 1,
     text: "Which plant is most likely to improve soil naturally by fixing nitrogen?",
     options: ["Cherry", "Apple", "Pea"],
     answer: 2,
@@ -169,7 +169,7 @@ const QUESTIONS = [
   },
   {
     id: 16,
-    module: 2,
+    module: 1,
     text: "Which garden has the greatest seed diversity?",
     options: ["A colourful garden with many different plants", "A large field growing only one crop", "A decorative lawn with no edible plants."],
     images: [asset("SeedDiversity1.png"), asset("SeedDiversity2.png"), asset("SeedDiversity3.png")],
