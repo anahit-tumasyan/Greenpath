@@ -88,7 +88,7 @@ const MODULES = [
     title: "ORGANIC PEST CONTROL AND COMPANION PLANTING",
     icon: "🌿",
     color: "#22c55e",
-    info: "Homemade natural pest control uses plant-based preparations and natural ingredients such as garlic, nettles, chili peppers, or soap solutions to manage garden pests without synthetic chemicals. These methods are enviromentally friendly, affordable, biodegradable, and. help protect beneficial insects while supporting sustainable and organic gardening practices."
+    info: "Homemade natural pest control uses plant-based preparations and natural ingredients such as garlic, nettles, chili peppers, or soap solutions to manage garden pests without synthetic chemicals. These methods are enviromentally friendly, affordable, biodegradable, and help protect beneficial insects while supporting sustainable and organic gardening practices."
   },
   {
     id: 3,
